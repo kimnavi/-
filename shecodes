@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    width: 200px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#weatherResult {
+    margin-top: 20px;
+}
+
+#weatherIcon {
+    width: 100px;
+}
+<body>
+    <div class="container">
+        <h1>Weather Forecast</h1>
+        <input type="text" id="search" placeholder="Enter city name">
+        <button id="searchButton">Search</button>
+        <div id="weatherResult">
+            <h2 id="cityName"></h2>
+            <img id="weatherIcon" alt="Weather Icon">
+            <p id="weatherDescription"></p>
+            <p id="windSpeed"></p>
+        </div>
+    </div>
+    <script src="script.js">document.getElementById('searchButton').addEventListener('click', getWeather);
+
+async function getWeather() 
+{
+    const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+    const city = document.getElementById('search').value;
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.cod === '404') {
+            alert('City not found');
+            return;
+        }
+
+        const cityName = data.name;
+        const weatherDescription = data.weather[0].description;
+        const windSpeed = `Wind Speed: ${data.wind.speed} m/s`;
+        const weatherIcon = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+
+        document.getElementById('cityName').textContent = cityName;
+        document.getElementById('weatherDescription').textContent = weatherDescription;
+        document.getElementById('windSpeed').textContent = windSpeed;
+        document.getElementById('weatherIcon').src = weatherIcon;
+
+    } catch (error) {
+        console.error('Error fetching the weather data:', error);
+    }
+}
+
+</script>
+</body>
+</html>
